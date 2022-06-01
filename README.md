@@ -45,6 +45,8 @@ A multifunctional telegram bot that can provide the user with necessary updates 
     /hi - to greet the bot.
     
    ![hi](https://user-images.githubusercontent.com/89451392/161107754-5f41e4c9-bbb7-43fc-9c9b-977c498f4097.png)
+   
+   /list - to list all the available commands supported by the bot
 
     /nu - to view the trending news of the day.
     
