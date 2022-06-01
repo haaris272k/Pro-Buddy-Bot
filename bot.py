@@ -5,7 +5,6 @@ import random
 import time
 import telebot
 
-
 # creating an instance of the TeleBot class
 bot = telebot.TeleBot("")
 # bot = telebot.TeleBot("") For when u'll create a new vbot
@@ -17,6 +16,7 @@ def hello(message):
     l2 = "I'm a telegram bot that can be your best Buddy in need."
     l3 = "I can provide you with necessary updates and help you increase your Productivity."
     l4 = "Feel free to add me to your groups and let others know about me"
+    l5 = "Type 'list' to see all the available commands"
     bot.send_message(
         message.chat.id,
         l1
@@ -31,9 +31,43 @@ def hello(message):
         + l4
         + "\n"
         + "\n"
-        + "Thank you 😇"+"\n"+"\n"+"Developed by @Haaris272k"
+        + l5
+        + "\n"
+        + "\n"
+        + "Thank you 😇"
+        + "\n"
+        + "\n"
+        + "Developed by @Haaris272k",
     )
-
+   
+@bot.message_handler(commands=["list"])
+def list(message):
+    comms = (
+        "List of available commands:"
+        + "\n"
+        + "/hi - to greet the bot."
+        + "\n"
+        + "/nu - to view the trending news of the day."
+        + "\n"
+        + "/wu - to view the live weather update."
+        + "\n"
+        + "/cu - to view the live cricket score."
+        + "\n"
+        + "/joke - to get a random joke."
+        + "\n"
+        + "/meme - to get a random meme."
+        + "\n"
+        + "/poem - to get a random poem."
+        + "\n"
+        + "/quote - to get a random quote."
+        + "\n"
+        + "/fact - to get a random fact."
+        + "\n"
+        + "/topw - to see the top 10 trending western songs of the week."
+        + "\n"
+        + "/topb-  to see the top 10 trending bollywood songs of the week."
+    )
+    bot.send_message(message.chat.id,comms)
 
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
