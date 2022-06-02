@@ -16,7 +16,7 @@ def hello(message):
     l2 = "I'm a telegram bot that can be your best Buddy in need."
     l3 = "I can provide you with necessary updates and help you increase your Productivity."
     l4 = "Feel free to add me to your groups and let others know about me"
-    l5 = "Type 'list' to see all the available commands"
+    l5 = "Type '/list' to see all the available commands"
     bot.send_message(
         message.chat.id,
         l1
@@ -39,7 +39,8 @@ def hello(message):
         + "\n"
         + "Developed by @Haaris272k",
     )
-   
+
+
 @bot.message_handler(commands=["list"])
 def list(message):
     comms = (
@@ -67,7 +68,8 @@ def list(message):
         + "\n"
         + "/topb-  to see the top 10 trending bollywood songs of the week."
     )
-    bot.send_message(message.chat.id,comms)
+    bot.send_message(message.chat.id, comms)
+
 
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
