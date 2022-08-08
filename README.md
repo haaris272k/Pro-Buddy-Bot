@@ -84,8 +84,12 @@ A multifunctional telegram bot that can provide the user with necessary updates 
     
    ![topw](https://user-images.githubusercontent.com/89451392/161107885-f5370c92-8ad0-4fe5-a00c-6298b9ab2044.png)
 
-    /topb-  to see the top 10 trending bollywood songs of the week.
+    /topb -  to see the top 10 trending bollywood songs of the week.
     
    ![topb](https://user-images.githubusercontent.com/89451392/161107895-c89c809c-f3cc-4c28-93e4-01e659958404.png)
+   
+    /movie or /md -  to get the details of a movie.
+   
+   ![t](https://user-images.githubusercontent.com/89451392/183397729-c1d52fb0-45cb-4c5b-9053-b7bafc087273.png)
 
 
