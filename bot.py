@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from data import *
+import json
 import requests
 import random
 import time
@@ -12,10 +13,12 @@ bot = telebot.TeleBot("")
 # welcome function
 @bot.message_handler(commands=["start"])
 def hello(message):
+
+    # welcoming the user
     l1 = "Hello, My name is Harry. My official name is 'ProBuddyBot'."
     l2 = "I'm a telegram bot that can be your best Buddy in need."
-    l3 = "I can provide you with necessary updates and help you increase your Productivity."
-    l4 = "Feel free to add me to your groups and let others know about me"
+    l3 = "I can provide you with necessary updates and do a lot more stuff."
+    l4 = "Feel free to add me to your telegram groups and let others know about me"
     l5 = "Type '/list' to see all the available commands"
     bot.send_message(
         message.chat.id,
@@ -41,38 +44,60 @@ def hello(message):
     )
 
 
+# list the available commands function
 @bot.message_handler(commands=["list"])
 def list(message):
+
+    # list of all the available commands
     comms = (
         "List of available commands:"
         + "\n"
+        + "\n"
         + "/hi - to greet the bot."
         + "\n"
-        + "/nu - to view the trending news of the day."
+        + "\n"
+        + "/nu - to view trending news of the day."
+        + "\n"
         + "\n"
         + "/wu - to view the live weather update."
         + "\n"
+        + "\n"
         + "/cu - to view the live cricket score."
+        + "\n"
         + "\n"
         + "/joke - to get a random joke."
         + "\n"
+        + "\n"
         + "/meme - to get a random meme."
+        + "\n"
         + "\n"
         + "/poem - to get a random poem."
         + "\n"
+        + "\n"
         + "/quote - to get a random quote."
+        + "\n"
         + "\n"
         + "/fact - to get a random fact."
         + "\n"
-        + "/topw - to see the top 10 trending western songs of the week."
         + "\n"
-        + "/topb-  to see the top 10 trending bollywood songs of the week."
+        + "/topw - top 10 trending western songs of the week."
+        + "\n"
+        + "\n"
+        + "/topb -  top 10 trending bollywood songs of the week."
+        + "\n"
+        + "\n"
+        + "/movie or /md - to get the details of any movie."
     )
+
+    # sending the list of commands to the telegram user
     bot.send_message(message.chat.id, comms)
 
 
+# greeting function
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
+
+    # greeting the user
     username = str(message.chat.first_name)
     greet = random.choice(interactive_greet_response)
     bot.send_message(message.chat.id, f"Hey {username}, {greet}")
@@ -112,30 +137,11 @@ def weather_update(message):
     r = requests.get(weather_update_link, headers=headers)
     soup = BeautifulSoup(r.text, "html.parser")
 
-    """location = soup.find(
-        "h1", {"class": "CurrentConditions--location--kyTeL"}
-    ).get_text()"""
-
     temperature = soup.find(
         "span", {"class": "CurrentConditions--tempValue--3a50n"}
     ).get_text()
-    condition = soup.find(
-        "div", {"class": "CurrentConditions--phraseValue--2Z18W"}
-    ).get_text()
-    weather = (
-        # "Your location is"
-        # + " "
-        # + location
-        # + "\n"+
-        "The current temperature is"
-        + " "
-        + temperature
-        + "C"
-        + " \n"
-        + "It's kinda "
-        + condition
-        + " out there"
-    )
+
+    weather = "The current temperature is" + " " + temperature + "C"
 
     ######################################################################################
 
@@ -212,14 +218,82 @@ def joke(message):
     bot.send_message(message.chat.id, random.choice(jokes))
 
 
+# movie details function(s)
+@bot.message_handler(commands=["Md", "md", "movie", "Movie"])
+def ask_movie_name(message):
+
+    # asking the user to enter the movie name
+    display_message = "What movie do you want to know about?"
+    bot.reply_to(message, display_message)
+    bot.register_next_step_handler(message, get_movie_name)
+
+
+def get_movie_name(message):
+
+    # getting the movie name from the user
+    movie_title = message.text
+
+    try:
+        api_key = ""
+        # fetching the movie details from the API
+        link = f"https://www.omdbapi.com/?t={movie_title}&apikey={api_key}"
+        r = requests.get(link, headers=headers)
+
+        # parsing the data and converting it (from json data format) to a dictionary
+        movie_data = json.loads(r.text)
+
+        # accessing the required data
+        movie_genre = movie_data["Genre"]
+        movie_title = movie_data["Title"]
+        movie_year = movie_data["Year"]
+        movie_rating = movie_data["imdbRating"]
+        movie_runtime = movie_data["Runtime"]
+        movie_director = movie_data["Director"]
+        movie_actors = movie_data["Actors"]
+        movie_plot = movie_data["Plot"]
+        movie_awards = movie_data["Awards"]
+
+        # storing the movie details
+        final_data = (
+            f"Title: {movie_title} \n"
+            f" \n"
+            f"Genre: {movie_genre} \n"
+            f" \n"
+            f"Year: {movie_year} \n"
+            f" \n"
+            f"Rating: {movie_rating} \n"
+            f" \n"
+            f"Runtime: {movie_runtime} \n"
+            f" \n"
+            f"Director: {movie_director} \n"
+            f" \n"
+            f"Actors: {movie_actors} \n"
+            f" \n"
+            f"Plot: {movie_plot} \n"
+            f" \n"
+            f"Awards: {movie_awards} \n"
+        )
+
+        # sending the relevant data to the telegram user
+        bot.send_message(message.chat.id, final_data)
+
+    except:
+        bot.send_message(message.chat.id, "Invalid movie name! ")
+
+
 # send meme function
 @bot.message_handler(commands=["meme"])
 def meme(message):
+
     try:
+
         # sending the relevant data to the telegram user
         bot.send_photo(message.chat.id, random.choice(memes))
+
     except:
+
         print("Some url is not working!")
+
         # just in case if there is some broken url it will ignore it and send the meme
         bot.send_photo(message.chat.id, random.choice(memes))
 
@@ -249,12 +323,12 @@ def quote(message):
 def fact(message):
 
     # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, "Here's a fact for you 😉")
+    bot.send_message(message.chat.id, "Here's a fact for you...")
     time.sleep(1)
     bot.send_message(message.chat.id, random.choice(facts))
 
 
-# showing top 10 western songs of the week
+# viewing top 10 western songs of the week
 @bot.message_handler(commands=["topw"])
 def top_western_songs(message):
 
@@ -279,14 +353,12 @@ def top_western_songs(message):
     ######################################################################################
 
     # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, "Looks like someone is in the mood to party 😈")
-    time.sleep(1)
     bot.send_message(message.chat.id, "Here's the 10 western songs topping the chart 🎶")
     time.sleep(0.5)
     bot.send_message(message.chat.id, top_10_western)
 
 
-# showing top 10 bollywood songs of the week
+# viewing top 10 bollywood songs of the week
 @bot.message_handler(commands=["topb"])
 def top_bollywood_songs(message):
 
@@ -310,32 +382,18 @@ def top_bollywood_songs(message):
     # sending the relevant data to the telegram user
     bot.send_message(
         message.chat.id,
-        "Oh cool bollywood!, Let's see what's making buzz in the indian musical industry these days 😜",
+        "Let's see what's making buzz in the indian musical industry these days 😜",
     )
     time.sleep(2)
     bot.send_message(message.chat.id, top_10_bollywood)
 
 
-# To send some media if a user enters a wrong command
+# invalid command function
 @bot.message_handler(func=lambda m: True)
-def repeat(message):
+def invalid_input(message):
 
-    # randomly choosing a media to send it to the user when he enters a wrong command
-    selected_cute_media = random.choice(cute_media_collection)
-
-    # sending the media to the telegram user
-    bot.send_message(message.chat.id, "Ooopsie, You've entered the wrong command 😕")
-    time.sleep(1.5)
-    bot.send_message(
-        message.chat.id, "It's not a problem, let me get a smile on your face 😉"
-    )
-    time.sleep(1.3)
-
-    # checking if the selected media is a photo or a video
-    if selected_cute_media[-3:] == "gif":
-        bot.send_animation(message.chat.id, selected_cute_media)
-    else:
-        bot.send_photo(message.chat.id, selected_cute_media)
+    # sending the invalid command message to the telegram user
+    bot.send_message(message.chat.id, "Invalid input 😕")
 
 
 bot.infinity_polling()
