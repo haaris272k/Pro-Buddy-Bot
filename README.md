@@ -32,9 +32,9 @@ A multifunctional telegram bot that can provide the user with necessary updates 
 
         get to know which western and bollywood songs are topping the charts
         
- - If a user enters the wrong command then bot would send an interactive message with an appealing media ( media would be some cute random pic of an animal(s) )
-
-    ![wrong command](https://user-images.githubusercontent.com/89451392/161107305-61f3ef36-9a71-455e-b588-ca81f44e266a.png)
+        get detaiils of any movie
+        
+ - If a user enters the wrong command then he will be notified that he entered the 'Invalid command!'
 
 # Commands
               
