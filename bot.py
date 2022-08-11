@@ -117,7 +117,7 @@ def trending_news(message):
         trending_news.append(i.get_text())
     final_display = " "
     for j in trending_news[0:5]:
-        final_display = final_display + "*" + " " + j + "\n" + "\n"
+        final_display = final_display + "🗞" + " " + j + "\n" + "\n"
 
     ######################################################################################
 
