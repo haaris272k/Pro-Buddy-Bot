@@ -18,13 +18,11 @@ A multifunctional telegram bot that can provide the user with necessary updates 
 
         gives weather update
 
-        gives the live score of some cricket match
+        ask bot to tell u something funny
 
-        ask bot to tell u a joke
+        ask bot to send u a meme (mostly reddit memes)
 
-        ask bot to send u a meme
-
-        you can get a random short poem 
+        you can get a random literature work/writing/poem
 
         read random quotes
 
@@ -32,7 +30,7 @@ A multifunctional telegram bot that can provide the user with necessary updates 
 
         get to know which western and bollywood songs are topping the charts
         
-        get detaiils of any movie
+        get details of any movie
         
  - If a user enters the wrong command then he will be notified that he entered the 'Invalid command!'
 
@@ -56,21 +54,17 @@ A multifunctional telegram bot that can provide the user with necessary updates 
     
    ![wu](https://user-images.githubusercontent.com/89451392/161107780-f414b812-ac59-4f3f-8e40-66c021965a9b.png)
 
-    /cu - to view the live cricket score.
+    /fun - to get a random joke.
     
-   ![cricket](https://user-images.githubusercontent.com/89451392/161107786-b79bf3d3-f10c-499b-aa92-55c4509da318.png)
-
-    /joke - to get a random joke.
-    
-   ![joke](https://user-images.githubusercontent.com/89451392/161107805-580290f3-77ce-4d59-80f4-c0911b773cbb.png)
+   ![fun](https://user-images.githubusercontent.com/89451392/161107805-580290f3-77ce-4d59-80f4-c0911b773cbb.png)
 
     /meme - to get a random meme.
     
    ![meme](https://user-images.githubusercontent.com/89451392/161107810-597f3d97-cb9f-4afc-bdbd-27561bf32c45.png)
 
-    /poem - to get a random poem.
+    /lit - to get a random poem.
     
-   ![poem](https://user-images.githubusercontent.com/89451392/161107839-2e759c48-f521-4cc2-8f28-7c80ee2e6ebd.png)
+   ![lit](https://user-images.githubusercontent.com/89451392/161107839-2e759c48-f521-4cc2-8f28-7c80ee2e6ebd.png)
 
     /quote - to get a random quote.
     

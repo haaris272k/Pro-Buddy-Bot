@@ -1,25 +1,24 @@
 from bs4 import BeautifulSoup
-from data import *
+from constants import *
+from connectTodatabase import *
 import json
 import requests
 import random
 import time
 import telebot
 
+
 # creating an instance of the TeleBot class
-bot = telebot.TeleBot("")
+bot = telebot.TeleBot(BOT_API_KEY)
 # bot = telebot.TeleBot("") For when u'll create a new vbot
 
-# welcome function
+"""function to welcome the user"""
+
+
 @bot.message_handler(commands=["start"])
 def hello(message):
 
     # welcoming the user
-    l1 = "Hello, My name is Harry. My official name is 'ProBuddyBot'."
-    l2 = "I'm a telegram bot that can be your best Buddy in need."
-    l3 = "I can provide you with necessary updates and do a lot more stuff."
-    l4 = "Feel free to add me to your telegram groups and let others know about me"
-    l5 = "Type '/list' to see all the available commands"
     bot.send_message(
         message.chat.id,
         l1
@@ -44,7 +43,9 @@ def hello(message):
     )
 
 
-# list the available commands function
+"""function to list the available commands"""
+
+
 @bot.message_handler(commands=["list"])
 def list(message):
 
@@ -62,16 +63,13 @@ def list(message):
         + "/wu - to view the live weather update."
         + "\n"
         + "\n"
-        + "/cu - to view the live cricket score."
-        + "\n"
-        + "\n"
-        + "/joke - to get a random joke."
+        + "/fun - to get something funny (humorous)."
         + "\n"
         + "\n"
         + "/meme - to get a random meme."
         + "\n"
         + "\n"
-        + "/poem - to get a random poem."
+        + "/lit - to get a random writing/literary work/poem."
         + "\n"
         + "\n"
         + "/quote - to get a random quote."
@@ -93,7 +91,9 @@ def list(message):
     bot.send_message(message.chat.id, comms)
 
 
-# greeting function
+"""function to greet the user"""
+
+
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
 
@@ -103,23 +103,33 @@ def hello(message):
     bot.send_message(message.chat.id, f"Hey {username}, {greet}")
 
 
-# send trending news function
+"""function to send news to the user"""
+
+
 @bot.message_handler(commands=["nu"])
 def trending_news(message):
 
-    ############## getting the relevant data which is to be send by the bot ##############
+    ############## scraping the news data which will be send to the user ##############
 
-    r = requests.get(trending_news_link)
+    r = requests.get(TRENDING_NEWS_LINK)
+
     soup = BeautifulSoup(r.text, "html.parser")
+
     news = soup.find_all("h3", {"class": "trenz_news_head lh22 listing_story_title"})
+
     trending_news = []
+
     for i in news:
+
         trending_news.append(i.get_text())
+
     final_display = " "
-    for j in trending_news[0:5]:
+
+    for j in trending_news[0:10]:
+
         final_display = final_display + "🗞" + " " + j + "\n" + "\n"
 
-    ######################################################################################
+    ###################################################################################
 
     # sending the relevant data to the telegram user
     interactive_tn_response = random.choice(interactive_news_response)
@@ -128,13 +138,16 @@ def trending_news(message):
     bot.send_message(message.chat.id, final_display)
 
 
-# send weather update function
+"""function to send weather update to the user"""
+
+
 @bot.message_handler(commands=["wu"])
 def weather_update(message):
 
-    ############## getting the relevant data which is to be send by the bot ##############
+    ############## getting the weather data which will be send to the user ##############
 
-    r = requests.get(weather_update_link, headers=headers)
+    r = requests.get(WEATHER_UPDATE_LINK, headers=HEADERS)
+
     soup = BeautifulSoup(r.text, "html.parser")
 
     temperature = soup.find(
@@ -149,76 +162,161 @@ def weather_update(message):
     bot.send_message(message.chat.id, weather)
 
 
-# send cricket update function
-@bot.message_handler(commands=["cu"])
-def cricket_update(message):
-
-    ############## getting the relevant data which is to be send by the bot ##############
-
-    try:
-        r = requests.get(cricket_update_link)
-        soup = BeautifulSoup(r.text, "html.parser")
-        team_1 = soup.find_all(class_="cb-ovr-flo cb-hmscg-tm-nm")[0].get_text()
-        team_2 = soup.find_all(class_="cb-ovr-flo cb-hmscg-tm-nm")[1].get_text()
-        t1_score = soup.find_all(class_="cb-ovr-flo")[8].get_text()
-        t2_score = soup.find_all(class_="cb-ovr-flo")[10].get_text()
-        if t2_score == "" or t2_score[0] == " ":
-            cricket_update = (
-                team_1
-                + " "
-                + ":"
-                + " "
-                + t1_score
-                + "\n"
-                + team_2
-                + " "
-                + ":"
-                + " "
-                + "Balling"
-            )
-        else:
-            cricket_update = (
-                team_1
-                + " "
-                + ":"
-                + " "
-                + t1_score
-                + "\n"
-                + team_2
-                + " "
-                + ":"
-                + " "
-                + t2_score
-            )
-
-        ######################################################################################
-
-        # sending the relevant data to the telegram user
-        bot.send_message(message.chat.id, cricket_update)
-    except:
-        bot.send_message(
-            message.chat.id, "Sorry, I am not able to get any update rn! 😢"
-        )
+"""function to send a random joke to the user"""
 
 
-# send joke function
-@bot.message_handler(commands=["joke"])
+@bot.message_handler(commands=["fun"])
 def joke(message):
 
-    # getting username of the telegram user
-    username = str(message.chat.first_name)
-
-    # sending the relevant data to the telegram user
+    # sending interactive response to the telegram user
     bot.send_message(
         message.chat.id,
-        f"{username}, you are really gonna fall for my sense of humour 😎🤏",
+        random.choice(interactive_joke_response),
     )
 
-    time.sleep(1.5)
-    bot.send_message(message.chat.id, random.choice(jokes))
+    """
+    fetching random joke from the database and sending it to the telegram user.
+    Using 'random' function to get a random number to be used as an ID.
+    The Joke corresponding to that particular ID will be fetched from the database 
+    and sent to the telegram user. Same will be done for quote, fact and poem functions
+    
+    """
+
+    """Remove the docstring of the below code if in case,
+    the id doesn't exist in the database"""
+
+    """
+    try:
+        id = random.randint(1, 1000)
+        query = collection.find_one({"_id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["joke"])
+    except:
+        id = random.randint(1, 1000)
+        query = collection.find_one({"_id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["joke"])
+    
+    """
+    id = random.randint(1, 1000)
+    query = collection.find_one({"_id": id})
+    time.sleep(0.5)
+    bot.send_message(message.chat.id, query["joke"])
 
 
-# movie details function(s)
+"""function to send a random meme to the user"""
+
+
+@bot.message_handler(commands=["meme"])
+def meme(message):
+
+    """Remove the docstring of the below code if in case,
+    the id doesn't exist in the database"""
+
+    """
+    try:
+        id = random.randint(1391, 1840)
+        query = collection.find_one({"id": id})
+        time.sleep(0.5)
+        bot.send_photo(message.chat.id, query["meme"])
+    except:
+        id = random.randint(1391, 1840)
+        query = collection.find_one({"id": id})
+        time.sleep(0.5)
+        bot.send_photo(message.chat.id, query["meme"])
+    
+    """
+    id = random.randint(1391, 1840)
+    query = collection.find_one({"id": id})
+    time.sleep(0.5)
+    bot.send_photo(message.chat.id, query["meme"])
+
+
+"""function to send a random poem to the user"""
+
+
+@bot.message_handler(commands=["lit"])
+def poem(message):
+
+    """Remove the docstring of the below code if in case,
+    the id doesn't exist in the database"""
+
+    """
+    try:
+        id = random.randint(1163, 1187)
+        query = collection.find_one({"id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["poem"])
+    except:
+        id = random.randint(1163, 1187)
+        query = collection.find_one({"id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["poem"])
+    """
+    id = random.randint(1163, 1187)
+    query = collection.find_one({"_id": id})
+    time.sleep(0.5)
+    bot.send_message(message.chat.id, query["poem"])
+
+
+"""function to send a random quote to the user"""
+
+
+@bot.message_handler(commands=["quote"])
+def quote(message):
+
+    """Remove the docstring of the below code if in case,
+    the id doesn't exist in the database"""
+
+    """
+    try:
+        id = random.randint(1007, 1148)
+        query = collection.find_one({"_id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["quote"])
+    except:
+        id = random.randint(1007, 1148)
+        query = collection.find_one({"_id": id})
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["quote"])
+    """
+    id = random.randint(1007, 1148)
+    query = collection.find_one({"_id": id})
+    time.sleep(0.5)
+    bot.send_message(message.chat.id, query["quote"])
+
+
+# sending a random fact functionality
+@bot.message_handler(commands=["fact"])
+def fact(message):
+
+    """Remove the docstring of the below code if in case,
+    the id doesn't exist in the database"""
+
+    """
+    try:
+        id = random.randint(1203, 1388)
+        query = collection.find_one({"_id": id})
+        bot.send_message(message.chat.id, "Here's a fact for you...")
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["fact"])
+    except:
+        id = random.randint(1203, 1388)
+        query = collection.find_one({"_id": id})
+        bot.send_message(message.chat.id, "Here's a fact for you...")
+        time.sleep(0.5)
+        bot.send_message(message.chat.id, query["fact"]) 
+    """
+    id = random.randint(1203, 1388)
+    query = collection.find_one({"_id": id})
+    bot.send_message(message.chat.id, interactive_fact_response)
+    time.sleep(0.5)
+    bot.send_message(message.chat.id, query["fact"])
+
+
+"""function(s) to provide with the movie details"""
+
+
 @bot.message_handler(commands=["Md", "md", "movie", "Movie"])
 def ask_movie_name(message):
 
@@ -234,10 +332,9 @@ def get_movie_name(message):
     movie_title = message.text
 
     try:
-        api_key = ""
         # fetching the movie details from the API
-        link = f"https://www.omdbapi.com/?t={movie_title}&apikey={api_key}"
-        r = requests.get(link, headers=headers)
+        link = f"https://www.omdbapi.com/?t={movie_title}&apikey={MOVIESDB_API_KEY}"
+        r = requests.get(link, headers=HEADERS)
 
         # parsing the data and converting it (from json data format) to a dictionary
         movie_data = json.loads(r.text)
@@ -281,76 +378,40 @@ def get_movie_name(message):
         bot.send_message(message.chat.id, "Invalid movie name! ")
 
 
-# send meme function
-@bot.message_handler(commands=["meme"])
-def meme(message):
-
-    try:
-
-        # sending the relevant data to the telegram user
-        bot.send_photo(message.chat.id, random.choice(memes))
-
-    except:
-
-        print("Some url is not working!")
-
-        # just in case if there is some broken url it will ignore it and send the meme
-        bot.send_photo(message.chat.id, random.choice(memes))
+"""function to display top 10 trending western songs"""
 
 
-# send poem function
-@bot.message_handler(commands=["poem"])
-def poem(message):
-
-    # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, random.choice(poems))
-
-
-# send quote function
-@bot.message_handler(commands=["quote"])
-def quote(message):
-
-    # sending the relevant data to the telegram user
-    bot.send_message(
-        message.chat.id, "Quotes are the reason why i am such a great bot 🤠"
-    )
-    time.sleep(1)
-    bot.send_message(message.chat.id, random.choice(quotes))
-
-
-# sending a random fact functionality
-@bot.message_handler(commands=["fact"])
-def fact(message):
-
-    # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, "Here's a fact for you...")
-    time.sleep(1)
-    bot.send_message(message.chat.id, random.choice(facts))
-
-
-# viewing top 10 western songs of the week
 @bot.message_handler(commands=["topw"])
 def top_western_songs(message):
 
-    ############## getting the relevant data which is to be send by the bot ##############
+    ############## scraping the relevant data which will be send to the user ##############
 
-    r = requests.get(western_songs_link, headers=headers)
+    r = requests.get(WESTERN_SONGS_LINK, headers=HEADERS)
+
     soup = BeautifulSoup(r.text, "html.parser")
+
     extracting = soup.find(
         "div",
         {
             "class": "chart-results-list // lrv-u-padding-t-150 lrv-u-padding-t-050@mobile-max"
         },
     ).find_all("h3", {"id": "title-of-a-story"})
+
     songs = []
+
     for song in extracting:
+
         songs.append(song.get_text().strip())
+
     list_songs = songs[2:12]
+
     top_10_western = " "
+
     for i in range(len(list_songs)):
+
         top_10_western = top_10_western + f"{i+1}" + " " + list_songs[i] + "\n" + "\n"
 
-    ######################################################################################
+    #######################################################################################
 
     # sending the relevant data to the telegram user
     bot.send_message(message.chat.id, "Here's the 10 western songs topping the chart 🎶")
@@ -358,26 +419,37 @@ def top_western_songs(message):
     bot.send_message(message.chat.id, top_10_western)
 
 
-# viewing top 10 bollywood songs of the week
+"""function to display top 10 trending bollywood songs"""
+
+
 @bot.message_handler(commands=["topb"])
 def top_bollywood_songs(message):
 
-    ############## getting the relevant data which is to be send by the bot ##############
+    ############## scraping the relevant data which will be send to the user ##############
 
-    r = requests.get(bollywood_songs_link, headers=headers)
+    r = requests.get(BOLLYWOOD_SONGS_LINK, headers=HEADERS)
+
     soup = BeautifulSoup(r.text, "html.parser")
+
     extracting = soup.find_all("a", {"class": "u-color-js-gray"})
+
     songs = []
+
     for song in extracting:
+
         songs.append(song.get_text().strip())
+
     list_songs = songs[0:10]
+
     top_10_bollywood = " "
+
     for i in range(len(list_songs)):
+
         top_10_bollywood = (
             top_10_bollywood + f"{i+1}" + " " + list_songs[i] + "\n" + "\n"
         )
 
-    ######################################################################################
+    #######################################################################################
 
     # sending the relevant data to the telegram user
     bot.send_message(
@@ -388,12 +460,14 @@ def top_bollywood_songs(message):
     bot.send_message(message.chat.id, top_10_bollywood)
 
 
-# invalid command function
+"""function to display invalid command message"""
+
+
 @bot.message_handler(func=lambda m: True)
 def invalid_input(message):
 
-    # sending the invalid command message to the telegram user
-    bot.send_message(message.chat.id, "Invalid input 😕")
+    # sending 'invalid input!' message to the user along with the gif
+    bot.send_animation(message.chat.id, INVALID_INPUT_GIF, caption="Invalid command!")
 
 
 bot.infinity_polling()
