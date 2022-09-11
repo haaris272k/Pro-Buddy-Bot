@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from Constants import *
+from constants import *
 from ConnectDatabase import *
 import json
 import requests

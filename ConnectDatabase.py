@@ -1,4 +1,4 @@
-from Constants import *
+from constants import *
 from pymongo import MongoClient
 import urllib.parse
 
