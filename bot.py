@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup
-from constants import *
-from connectTodatabase import *
+from Constants import *
+from ConnectDatabase import *
 import json
 import requests
 import random
+from LookupAlgorithm import *
 import time
 import telebot
 
@@ -174,34 +175,15 @@ def joke(message):
         random.choice(interactive_joke_response),
     )
 
-    """
-    fetching random joke from the database and sending it to the telegram user.
-    Using 'random' function to get a random number to be used as an ID.
-    The Joke corresponding to that particular ID will be fetched from the database 
-    and sent to the telegram user. Same will be done for quote, fact and poem functions
-    
-    """
+    tagtype = "joke"
 
-    """Remove the docstring of the below code if in case,
-    the id doesn't exist in the database"""
+    # id = random.randint(1, 1000)
+    # query = collection.find_one({"_id": id})
+    # time.sleep(0.5)
+    # bot.send_message(message.chat.id, query["joke"])
 
-    """
-    try:
-        id = random.randint(1, 1000)
-        query = collection.find_one({"_id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["joke"])
-    except:
-        id = random.randint(1, 1000)
-        query = collection.find_one({"_id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["joke"])
-    
-    """
-    id = random.randint(1, 1000)
-    query = collection.find_one({"_id": id})
-    time.sleep(0.5)
-    bot.send_message(message.chat.id, query["joke"])
+    result = lookup(tagtype)
+    bot.send_message(message.chat.id, result)
 
 
 """function to send a random meme to the user"""
@@ -210,26 +192,13 @@ def joke(message):
 @bot.message_handler(commands=["meme"])
 def meme(message):
 
-    """Remove the docstring of the below code if in case,
-    the id doesn't exist in the database"""
-
-    """
-    try:
-        id = random.randint(1391, 1840)
-        query = collection.find_one({"id": id})
-        time.sleep(0.5)
-        bot.send_photo(message.chat.id, query["meme"])
-    except:
-        id = random.randint(1391, 1840)
-        query = collection.find_one({"id": id})
-        time.sleep(0.5)
-        bot.send_photo(message.chat.id, query["meme"])
-    
-    """
-    id = random.randint(1391, 1840)
-    query = collection.find_one({"id": id})
-    time.sleep(0.5)
-    bot.send_photo(message.chat.id, query["meme"])
+    tagtype = "meme"
+    # id = random.randint(1391, 1840)
+    # query = collection.find_one({"id": id})
+    # time.sleep(0.5)
+    # bot.send_photo(message.chat.id, query["meme"])
+    result = lookup(tagtype)
+    bot.send_photo(message.chat.id, result)
 
 
 """function to send a random poem to the user"""
@@ -238,25 +207,13 @@ def meme(message):
 @bot.message_handler(commands=["lit"])
 def poem(message):
 
-    """Remove the docstring of the below code if in case,
-    the id doesn't exist in the database"""
-
-    """
-    try:
-        id = random.randint(1163, 1187)
-        query = collection.find_one({"id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["poem"])
-    except:
-        id = random.randint(1163, 1187)
-        query = collection.find_one({"id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["poem"])
-    """
-    id = random.randint(1163, 1187)
-    query = collection.find_one({"_id": id})
-    time.sleep(0.5)
-    bot.send_message(message.chat.id, query["poem"])
+    tagtype = "poem"
+    # id = random.randint(1163, 1187)
+    # query = collection.find_one({"_id": id})
+    # time.sleep(0.5)
+    # bot.send_message(message.chat.id, query["poem"])
+    result = lookup(tagtype)
+    bot.send_message(message.chat.id, result)
 
 
 """function to send a random quote to the user"""
@@ -265,53 +222,27 @@ def poem(message):
 @bot.message_handler(commands=["quote"])
 def quote(message):
 
-    """Remove the docstring of the below code if in case,
-    the id doesn't exist in the database"""
-
-    """
-    try:
-        id = random.randint(1007, 1148)
-        query = collection.find_one({"_id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["quote"])
-    except:
-        id = random.randint(1007, 1148)
-        query = collection.find_one({"_id": id})
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["quote"])
-    """
-    id = random.randint(1007, 1148)
-    query = collection.find_one({"_id": id})
-    time.sleep(0.5)
-    bot.send_message(message.chat.id, query["quote"])
+    tagtype = "quote"
+    # id = random.randint(1007, 1148)
+    # query = collection.find_one({"_id": id})
+    # time.sleep(0.5)
+    # bot.send_message(message.chat.id, query["quote"])
+    result = lookup(tagtype)
+    bot.send_message(message.chat.id, result)
 
 
 # sending a random fact functionality
 @bot.message_handler(commands=["fact"])
 def fact(message):
 
-    """Remove the docstring of the below code if in case,
-    the id doesn't exist in the database"""
-
-    """
-    try:
-        id = random.randint(1203, 1388)
-        query = collection.find_one({"_id": id})
-        bot.send_message(message.chat.id, "Here's a fact for you...")
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["fact"])
-    except:
-        id = random.randint(1203, 1388)
-        query = collection.find_one({"_id": id})
-        bot.send_message(message.chat.id, "Here's a fact for you...")
-        time.sleep(0.5)
-        bot.send_message(message.chat.id, query["fact"]) 
-    """
-    id = random.randint(1203, 1388)
-    query = collection.find_one({"_id": id})
-    bot.send_message(message.chat.id, interactive_fact_response)
-    time.sleep(0.5)
-    bot.send_message(message.chat.id, query["fact"])
+    tagtype = "fact"
+    # id = random.randint(1203, 1388)
+    # query = collection.find_one({"_id": id})
+    # bot.send_message(message.chat.id, interactive_fact_response)
+    # time.sleep(0.5)
+    # bot.send_message(message.chat.id, query["fact"])
+    result = lookup(tagtype)
+    bot.send_message(message.chat.id, result)
 
 
 """function(s) to provide with the movie details"""
