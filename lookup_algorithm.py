@@ -1,4 +1,4 @@
-from ConnectDatabase import *
+from connect_database import *
 import random
 
 

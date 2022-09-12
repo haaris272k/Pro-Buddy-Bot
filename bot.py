@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
 from constants import *
-from ConnectDatabase import *
+from connect_database import *
 import json
 import requests
 import random
-from LookupAlgorithm import *
+from lookup_algorithm import *
 import time
 import telebot
 
