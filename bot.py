@@ -174,14 +174,7 @@ def joke(message):
         message.chat.id,
         random.choice(interactive_joke_response),
     )
-
     tagtype = "joke"
-
-    # id = random.randint(1, 1000)
-    # query = collection.find_one({"_id": id})
-    # time.sleep(0.5)
-    # bot.send_message(message.chat.id, query["joke"])
-
     result = lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
@@ -193,10 +186,6 @@ def joke(message):
 def meme(message):
 
     tagtype = "meme"
-    # id = random.randint(1391, 1840)
-    # query = collection.find_one({"id": id})
-    # time.sleep(0.5)
-    # bot.send_photo(message.chat.id, query["meme"])
     result = lookup(tagtype)
     bot.send_photo(message.chat.id, result)
 
@@ -208,10 +197,6 @@ def meme(message):
 def poem(message):
 
     tagtype = "poem"
-    # id = random.randint(1163, 1187)
-    # query = collection.find_one({"_id": id})
-    # time.sleep(0.5)
-    # bot.send_message(message.chat.id, query["poem"])
     result = lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
@@ -223,10 +208,6 @@ def poem(message):
 def quote(message):
 
     tagtype = "quote"
-    # id = random.randint(1007, 1148)
-    # query = collection.find_one({"_id": id})
-    # time.sleep(0.5)
-    # bot.send_message(message.chat.id, query["quote"])
     result = lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
@@ -236,11 +217,6 @@ def quote(message):
 def fact(message):
 
     tagtype = "fact"
-    # id = random.randint(1203, 1388)
-    # query = collection.find_one({"_id": id})
-    # bot.send_message(message.chat.id, interactive_fact_response)
-    # time.sleep(0.5)
-    # bot.send_message(message.chat.id, query["fact"])
     result = lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
