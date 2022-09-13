@@ -80,7 +80,7 @@ def no(message):
     # sending a message to the user
     bot.send_message(
         message.chat.id,
-        "Okay, No problem. You can use /nu command manually to get news updates whenever you want.",
+        "You can use /nu command manually to get news updates whenever you want.",
     )
 
 
