@@ -4,7 +4,7 @@
 
 
 # reading credentials from creds.txt file
-with open("credentials.txt", "r") as f:
+with open("creds.txt", "r") as f:
     keys = f.read().splitlines()
 
 # credentials

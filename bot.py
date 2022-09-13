@@ -1,17 +1,17 @@
-from bs4 import BeautifulSoup
 from constants import *
-from connect_database import *
+from database_handlers import *
+from data_scraper import *
 import json
-import requests
-import random
-from lookup_algorithm import *
+import schedule
 import time
 import telebot
 
 
 # creating an instance of the TeleBot class
 bot = telebot.TeleBot(BOT_API_KEY)
-# bot = telebot.TeleBot("") For when u'll create a new vbot
+
+# connecting to the database from DatabaseHandler class
+dbhandler.connect_database(MONGODB_ATLAS_UNAME, MONGODB_ATLAS_PW)
 
 """function to welcome the user"""
 
@@ -41,6 +41,46 @@ def hello(message):
         + "\n"
         + "\n"
         + "Developed by @Haaris272k",
+    )
+
+    time.sleep(3)
+    username = message.from_user.username
+    bot.send_message(
+        message.chat.id,
+        f"Hey @{username}!, Do you want to get automated news updates?. Select /yes or /no",
+    )
+
+
+"""function to send automated news updates"""
+
+
+@bot.message_handler(commands=["yes"])
+def automated_trending_news(message):
+
+    """send news updates to the user (similar to  as what /nu command does)"""
+
+    def get_trending_news():
+
+        # using get_news() method from scraper class to get the news
+        news = data.get_news(TRENDING_NEWS_LINK)
+
+        # sending the news to the user
+        bot.send_message(message.chat.id, news)
+
+    # scheduling the function to run every n minutes
+    schedule.every(18000).seconds.do(get_trending_news)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+@bot.message_handler(commands=["no"])
+def no(message):
+
+    # sending a message to the user
+    bot.send_message(
+        message.chat.id,
+        "Okay, No problem. You can use /nu command manually to get news updates whenever you want.",
     )
 
 
@@ -110,33 +150,14 @@ def hello(message):
 @bot.message_handler(commands=["nu"])
 def trending_news(message):
 
-    ############## scraping the news data which will be send to the user ##############
-
-    r = requests.get(TRENDING_NEWS_LINK)
-
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    news = soup.find_all("h3", {"class": "trenz_news_head lh22 listing_story_title"})
-
-    trending_news = []
-
-    for i in news:
-
-        trending_news.append(i.get_text())
-
-    final_display = " "
-
-    for j in trending_news[0:10]:
-
-        final_display = final_display + "🗞" + " " + j + "\n" + "\n"
-
-    ###################################################################################
+    # using get_news() method from Data_Scraper class to get the news
+    trending_news = data.get_news(TRENDING_NEWS_LINK)
 
     # sending the relevant data to the telegram user
     interactive_tn_response = random.choice(interactive_news_response)
     bot.send_message(message.chat.id, interactive_tn_response)
     time.sleep(0.5)
-    bot.send_message(message.chat.id, final_display)
+    bot.send_message(message.chat.id, trending_news)
 
 
 """function to send weather update to the user"""
@@ -145,22 +166,11 @@ def trending_news(message):
 @bot.message_handler(commands=["wu"])
 def weather_update(message):
 
-    ############## getting the weather data which will be send to the user ##############
-
-    r = requests.get(WEATHER_UPDATE_LINK, headers=HEADERS)
-
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    temperature = soup.find(
-        "span", {"class": "CurrentConditions--tempValue--3a50n"}
-    ).get_text()
-
-    weather = "The current temperature is" + " " + temperature + "C"
-
-    ######################################################################################
+    # using get_weather_update() method from Data_Scraper class to get the weather update
+    weather_update = data.get_weather_update(WEATHER_UPDATE_LINK)
 
     # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, weather)
+    bot.send_message(message.chat.id, weather_update)
 
 
 """function to send a random joke to the user"""
@@ -174,8 +184,17 @@ def joke(message):
         message.chat.id,
         random.choice(interactive_joke_response),
     )
+
     tagtype = "joke"
-    result = lookup(tagtype)
+
+    """
+    using lookup method of dbhandler class 
+    to get a random joke from the database. 
+    This lookup algorithm will be used in fetching other 
+    data (meme, poem, quote, fact) as well.
+    
+    """
+    result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
 
@@ -186,7 +205,7 @@ def joke(message):
 def meme(message):
 
     tagtype = "meme"
-    result = lookup(tagtype)
+    result = dbhandler.lookup(tagtype)
     bot.send_photo(message.chat.id, result)
 
 
@@ -197,7 +216,7 @@ def meme(message):
 def poem(message):
 
     tagtype = "poem"
-    result = lookup(tagtype)
+    result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
 
@@ -208,16 +227,18 @@ def poem(message):
 def quote(message):
 
     tagtype = "quote"
-    result = lookup(tagtype)
+    result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
 
-# sending a random fact functionality
+"""function to send a random fact to the user"""
+
+
 @bot.message_handler(commands=["fact"])
 def fact(message):
 
     tagtype = "fact"
-    result = lookup(tagtype)
+    result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
 
@@ -240,7 +261,9 @@ def get_movie_name(message):
 
     try:
         # fetching the movie details from the API
-        link = f"https://www.omdbapi.com/?t={movie_title}&apikey={MOVIESDB_API_KEY}"
+        link = (
+            f"https://www.omdbhandlerapi.com/?t={movie_title}&apikey={MOVIESDB_API_KEY}"
+        )
         r = requests.get(link, headers=HEADERS)
 
         # parsing the data and converting it (from json data format) to a dictionary
@@ -250,7 +273,7 @@ def get_movie_name(message):
         movie_genre = movie_data["Genre"]
         movie_title = movie_data["Title"]
         movie_year = movie_data["Year"]
-        movie_rating = movie_data["imdbRating"]
+        movie_rating = movie_data["imdbhandlerRating"]
         movie_runtime = movie_data["Runtime"]
         movie_director = movie_data["Director"]
         movie_actors = movie_data["Actors"]
@@ -291,34 +314,8 @@ def get_movie_name(message):
 @bot.message_handler(commands=["topw"])
 def top_western_songs(message):
 
-    ############## scraping the relevant data which will be send to the user ##############
-
-    r = requests.get(WESTERN_SONGS_LINK, headers=HEADERS)
-
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    extracting = soup.find(
-        "div",
-        {
-            "class": "chart-results-list // lrv-u-padding-t-150 lrv-u-padding-t-050@mobile-max"
-        },
-    ).find_all("h3", {"id": "title-of-a-story"})
-
-    songs = []
-
-    for song in extracting:
-
-        songs.append(song.get_text().strip())
-
-    list_songs = songs[2:12]
-
-    top_10_western = " "
-
-    for i in range(len(list_songs)):
-
-        top_10_western = top_10_western + f"{i+1}" + " " + list_songs[i] + "\n" + "\n"
-
-    #######################################################################################
+    # using get_trending_western_songs() method from Data_Scraper class to get the top 10 trending western songs
+    top_10_western = data.get_trending_western_songs(WESTERN_SONGS_LINK)
 
     # sending the relevant data to the telegram user
     bot.send_message(message.chat.id, "Here's the 10 western songs topping the chart 🎶")
@@ -332,31 +329,8 @@ def top_western_songs(message):
 @bot.message_handler(commands=["topb"])
 def top_bollywood_songs(message):
 
-    ############## scraping the relevant data which will be send to the user ##############
-
-    r = requests.get(BOLLYWOOD_SONGS_LINK, headers=HEADERS)
-
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    extracting = soup.find_all("a", {"class": "u-color-js-gray"})
-
-    songs = []
-
-    for song in extracting:
-
-        songs.append(song.get_text().strip())
-
-    list_songs = songs[0:10]
-
-    top_10_bollywood = " "
-
-    for i in range(len(list_songs)):
-
-        top_10_bollywood = (
-            top_10_bollywood + f"{i+1}" + " " + list_songs[i] + "\n" + "\n"
-        )
-
-    #######################################################################################
+    # using get_trending_bollywood_songs() method from Data_Scraper class to get the top 10 trending bollywood songs
+    top_10_bollywood = data.get_trending_bollywood_songs(BOLLYWOOD_SONGS_LINK)
 
     # sending the relevant data to the telegram user
     bot.send_message(
