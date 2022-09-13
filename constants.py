@@ -65,7 +65,6 @@ interactive_news_response = [
     "Here's the top headlines of the day 🗞",
 ]
 
-
 # fact response
 interactive_fact_response = [
     "Here's a fact for you 🤓",
