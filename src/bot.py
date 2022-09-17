@@ -57,6 +57,10 @@ def hello(message):
 @bot.message_handler(commands=["yes"])
 def automated_trending_news(message):
 
+    bot.send_message(
+        message.chat.id, "Ok, You will be recieving automated news updates from now on!"
+    )
+
     """send news updates to the user (similar to  as what /nu command does)"""
 
     def get_trending_news():
