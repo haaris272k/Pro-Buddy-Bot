@@ -11,7 +11,6 @@ get_trending_bollywood_songs method is used to fetch the trending (top) indian s
 
 """
 
-
 class DataScraper:
     def __init__(self) -> None:
         pass

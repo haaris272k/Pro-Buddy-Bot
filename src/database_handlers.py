@@ -10,7 +10,6 @@ lookup method makes use of basic algorithm to fetch a random document from the d
 
 """
 
-
 class DatabaseHandlers:
     def __init__(self) -> None:
         pass
