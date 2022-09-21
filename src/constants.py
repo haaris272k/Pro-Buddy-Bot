@@ -34,11 +34,9 @@ BOLLYWOOD_SONGS_LINK = (
 INVALID_INPUT_GIF = "https://tenor.com/view/nah-no-deal-wrong-number-refuse-cross-mark-gif-12777987360130611860"
 
 # welcoming the user
-l1 = "Hello, My name is Harry. My official name is 'ProBuddyBot'."
-l2 = "I'm a telegram bot that can be your best Buddy in need."
-l3 = "I can provide you with necessary updates and do a lot more stuff."
-l4 = "Feel free to add me to your telegram groups and let others know about me"
-l5 = "Type '/list' to see all the available commands"
+l1 = "Hi!, I am a bot that can be your 'Best Buddy' in need."
+l2 = "Feel free to add me to your telegram groups and let others know about me."
+l3 = "Type '/list' to see all the available commands"
 
 # interactive messages
 # greetings
@@ -54,7 +52,6 @@ interactive_greet_response = [
 # joke response
 interactive_joke_response = [
     "Careful, sometimes it might get dark 😳",
-    "You are really gonna fall for my sense of humour 😎",
     "I'm not sure if you are gonna like it or not but, here you go 🙊",
 ]
 
@@ -64,6 +61,7 @@ interactive_news_response = [
     "Trending news of the day 📰",
     "Here's the top headlines of the day 🗞",
 ]
+
 
 # fact response
 interactive_fact_response = [

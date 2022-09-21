@@ -31,12 +31,6 @@ def hello(message):
         + l3
         + "\n"
         + "\n"
-        + l4
-        + "\n"
-        + "\n"
-        + l5
-        + "\n"
-        + "\n"
         + "Thank you 😇"
         + "\n"
         + "\n"
