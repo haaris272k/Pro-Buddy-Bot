@@ -346,7 +346,7 @@ def top_bollywood_songs(message):
 def invalid_input(message):
 
     # sending 'invalid input!' message to the user along with the gif
-    bot.send_animation(message.chat.id, INVALID_INPUT_GIF, caption="Invalid command!")
+    bot.send_animation(message.chat.id, INVALID_INPUT_GIF, caption="Unrecognizable command!")
 
 
 bot.infinity_polling()
