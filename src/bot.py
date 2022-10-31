@@ -6,7 +6,6 @@ import schedule
 import time
 import telebot
 
-'''Testing Line'''
 
 # creating an instance of the TeleBot class
 bot = telebot.TeleBot(BOT_API_KEY)
