@@ -6,19 +6,24 @@ import schedule
 import time
 import telebot
 
-
 # creating an instance of the TeleBot class
 bot = telebot.TeleBot(BOT_API_KEY)
 
 # connecting to the database from DatabaseHandler class
 dbhandler.connect_database(MONGODB_ATLAS_UNAME, MONGODB_ATLAS_PW)
 
-"""function to welcome the user"""
-
-
 @bot.message_handler(commands=["start"])
 def hello(message):
 
+    """
+    function to greet the user and send the list of available commands
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    """
     # welcoming the user
     bot.send_message(
         message.chat.id,
@@ -44,13 +49,19 @@ def hello(message):
         f"Hey @{username}!, Do you want to get automated news updates?. Select /yes or /no",
     )
 
-
-"""function to send automated news updates"""
-
-
 @bot.message_handler(commands=["yes"])
 def automated_trending_news(message):
 
+    """
+    function to send automated news updates to the user
+    
+    Args:   
+        message (str): message sent by the user
+
+    Returns:
+        None
+
+    """
     bot.send_message(
         message.chat.id, "Ok, You will be recieving automated news updates from now on!"
     )
@@ -71,23 +82,38 @@ def automated_trending_news(message):
         schedule.run_pending()
         time.sleep(1)
 
-
 @bot.message_handler(commands=["no"])
 def no(message):
 
+    """
+    function to send a message to the user if he/she doesn't want automated news updates
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # sending a message to the user
     bot.send_message(
         message.chat.id,
-        "You can use /nu command manually to get news updates whenever you want.",
+        "Okay, No problem. You can use /nu command manually to get news updates whenever you want.",
     )
-
-
-"""function to list the available commands"""
-
 
 @bot.message_handler(commands=["list"])
 def list(message):
 
+    """
+    function to send the list of available commands to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # list of all the available commands
     comms = (
         "List of available commands:"
@@ -97,9 +123,6 @@ def list(message):
         + "\n"
         + "\n"
         + "/nu - to view trending news of the day."
-        + "\n"
-        + "\n"
-        + "/wu - to view the live weather update."
         + "\n"
         + "\n"
         + "/fun - to get something funny (humorous)."
@@ -129,25 +152,37 @@ def list(message):
     # sending the list of commands to the telegram user
     bot.send_message(message.chat.id, comms)
 
-
-"""function to greet the user"""
-
-
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
 
+    """
+    function to greet the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # greeting the user
     username = str(message.chat.first_name)
     greet = random.choice(interactive_greet_response)
     bot.send_message(message.chat.id, f"Hey {username}, {greet}")
 
-
-"""function to send news to the user"""
-
-
 @bot.message_handler(commands=["nu"])
 def trending_news(message):
 
+    """
+    function to send trending news to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+
+    """
     # using get_news() method from Data_Scraper class to get the news
     trending_news = data.get_news(TRENDING_NEWS_LINK)
 
@@ -157,26 +192,19 @@ def trending_news(message):
     time.sleep(0.5)
     bot.send_message(message.chat.id, trending_news)
 
-
-"""function to send weather update to the user"""
-
-
-@bot.message_handler(commands=["wu"])
-def weather_update(message):
-
-    # using get_weather_update() method from Data_Scraper class to get the weather update
-    weather_update = data.get_weather_update(WEATHER_UPDATE_LINK)
-
-    # sending the relevant data to the telegram user
-    bot.send_message(message.chat.id, weather_update)
-
-
-"""function to send a random joke to the user"""
-
-
 @bot.message_handler(commands=["fun"])
 def joke(message):
 
+    """
+    function to send a random joke to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # sending interactive response to the telegram user
     bot.send_message(
         message.chat.id,
@@ -195,65 +223,104 @@ def joke(message):
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
-
-"""function to send a random meme to the user"""
-
-
 @bot.message_handler(commands=["meme"])
 def meme(message):
 
+    """
+    function to send a random meme to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     tagtype = "meme"
     result = dbhandler.lookup(tagtype)
     bot.send_photo(message.chat.id, result)
 
-
-"""function to send a random poem to the user"""
-
-
 @bot.message_handler(commands=["lit"])
 def poem(message):
 
+    """
+    function to send a random poem to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     tagtype = "poem"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
-
-"""function to send a random quote to the user"""
-
-
 @bot.message_handler(commands=["quote"])
 def quote(message):
 
+    """
+    function to send a random quote to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     tagtype = "quote"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
-
-"""function to send a random fact to the user"""
-
-
 @bot.message_handler(commands=["fact"])
 def fact(message):
 
+    """
+    function to send a random fact to the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     tagtype = "fact"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
-
-"""function(s) to provide with the movie details"""
-
-
 @bot.message_handler(commands=["Md", "md", "movie", "Movie"])
 def ask_movie_name(message):
 
+    """
+    function to ask the user for the movie name
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+
+    """
     # asking the user to enter the movie name
     display_message = "What movie do you want to know about?"
     bot.reply_to(message, display_message)
     bot.register_next_step_handler(message, get_movie_name)
 
-
 def get_movie_name(message):
 
+    """
+    function to get the movie name from the user
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # getting the movie name from the user
     movie_title = message.text
 
@@ -305,13 +372,19 @@ def get_movie_name(message):
     except:
         bot.send_message(message.chat.id, "Invalid movie name! ")
 
-
-"""function to display top 10 trending western songs"""
-
-
 @bot.message_handler(commands=["topw"])
 def top_western_songs(message):
 
+    """
+    function to display top 10 trending western songs
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # using get_trending_western_songs() method from Data_Scraper class to get the top 10 trending western songs
     top_10_western = data.get_trending_western_songs(WESTERN_SONGS_LINK)
 
@@ -320,13 +393,19 @@ def top_western_songs(message):
     time.sleep(0.5)
     bot.send_message(message.chat.id, top_10_western)
 
-
-"""function to display top 10 trending bollywood songs"""
-
-
 @bot.message_handler(commands=["topb"])
 def top_bollywood_songs(message):
 
+    """
+    function to display top 10 trending bollywood songs
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+
+    """
     # using get_trending_bollywood_songs() method from Data_Scraper class to get the top 10 trending bollywood songs
     top_10_bollywood = data.get_trending_bollywood_songs(BOLLYWOOD_SONGS_LINK)
 
@@ -338,17 +417,22 @@ def top_bollywood_songs(message):
     time.sleep(2)
     bot.send_message(message.chat.id, top_10_bollywood)
 
-
-"""function to display invalid command message"""
-
-
 @bot.message_handler(func=lambda m: True)
 def invalid_input(message):
 
+    """
+    function to handle invalid input
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    
+    """
     # sending 'invalid input!' message to the user along with the gif
     bot.send_animation(
         message.chat.id, INVALID_INPUT_GIF, caption="Unrecognizable command!"
     )
-
 
 bot.infinity_polling()

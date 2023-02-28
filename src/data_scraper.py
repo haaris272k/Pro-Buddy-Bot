@@ -10,13 +10,34 @@ get_trending_western_songs method is used to fetch the trending (top) western so
 get_trending_bollywood_songs method is used to fetch the trending (top) indian songs from the music website.
 
 """
-
 class DataScraper:
+
     def __init__(self) -> None:
+
+        """
+        This is the constructor of the class.
+
+        Args:
+            self: The object of the class.
+
+        Returns:
+            None
+        
+        """
         pass
 
     def get_news(self, TRENDING_NEWS_LINK):
 
+        """
+        This method is used to fetch the news from the news website.
+
+        Args:   
+            self: The object of the class.  
+
+        Returns:    
+            final_display: The string which contains the news.
+        
+        """
         r = requests.get(TRENDING_NEWS_LINK)
 
         soup = BeautifulSoup(r.text, "html.parser")
@@ -39,24 +60,43 @@ class DataScraper:
 
         return final_display
 
-    def get_weather_update(self, WEATHER_UPDATE_LINK):
+    # def get_weather_update(self, WEATHER_UPDATE_LINK):
 
-        """scraping the weather data"""
+        # """
+        # This method is used to fetch the weather update from the web.
 
-        r = requests.get(WEATHER_UPDATE_LINK, headers=HEADERS)
+        # Args:   
+        #     self: The object of the class.
 
-        soup = BeautifulSoup(r.text, "html.parser")
+        # Returns:
+        #     weather: The string which contains the weather update.
+        
+        # """
+        # r = requests.get(WEATHER_UPDATE_LINK, headers=HEADERS)
 
-        temperature = soup.find(
-            "span", {"class": "CurrentConditions--tempValue--3a50n"}
-        ).get_text()
+        # soup = BeautifulSoup(r.text, "html.parser")
 
-        weather = "The current temperature is" + " " + temperature + "C"
+        # temperature = soup.find(
+        #     "span", {"class": "CurrentConditions--tempValue--3a50n"}
+        # ).get_text()
 
-        return weather
+        # weather = "The current temperature is" + " " + temperature + "C"
+
+        # return weather
+
 
     def get_trending_western_songs(self, WESTERN_SONGS_LINK):
 
+        """
+        This method is used to fetch the trending (top) western songs from the music website.
+
+        Args:
+            self: The object of the class.
+
+        Returns:
+            top_10_western: The string which contains the top 10 western songs.
+        
+        """
         r = requests.get(WESTERN_SONGS_LINK, headers=HEADERS)
 
         soup = BeautifulSoup(r.text, "html.parser")
@@ -88,6 +128,16 @@ class DataScraper:
 
     def get_trending_bollywood_songs(self, BOLLYWOOD_SONGS_LINK):
 
+        """
+        This method is used to fetch the trending (top) indian songs from the music website.
+
+        Args:
+            self: The object of the class.
+
+        Returns:
+            top_10_bollywood: The string which contains the top 10 indian songs.
+        
+        """
         r = requests.get(BOLLYWOOD_SONGS_LINK, headers=HEADERS)
 
         soup = BeautifulSoup(r.text, "html.parser")
@@ -111,7 +161,6 @@ class DataScraper:
             )
 
         return top_10_bollywood
-
 
 # creating an object of the class
 data = DataScraper()

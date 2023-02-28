@@ -11,10 +11,31 @@ lookup method makes use of basic algorithm to fetch a random document from the d
 """
 
 class DatabaseHandlers:
+
     def __init__(self) -> None:
+
+        """
+        This is the constructor of the class.
+
+        Args:
+            self: The object of the class.
+
+        Returns:
+            None
+        """
         pass
 
     def connect_database(self, MONGODB_ATLAS_UNAME, MONGODB_ATLAS_PW):
+
+        """
+        This method is used to connect to the database,create a database and create a collection.
+
+        Args:
+            self: The object of the class.
+
+        Returns:
+            None
+        """
         try:
             username = urllib.parse.quote_plus(MONGODB_ATLAS_UNAME)
             password = urllib.parse.quote_plus(MONGODB_ATLAS_PW)
@@ -30,6 +51,17 @@ class DatabaseHandlers:
             return "Error"
 
     def lookup(self, input_tag):
+
+        """
+        This method makes use of basic algorithm to fetch a random document from the database.
+
+        Args:
+            self: The object of the class.
+
+        Returns:    
+            None
+
+        """
         try:
             idranges = {
                 "joke": [1, 1000],
@@ -51,7 +83,6 @@ class DatabaseHandlers:
                 return query[input_tag]
         except:
             return "Some error occured!"
-
 
 # create an object of the class
 dbhandler = DatabaseHandlers()
