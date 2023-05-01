@@ -16,8 +16,6 @@ A multifunctional telegram bot that can provide the user with necessary updates 
 
         sends the trending news of the day
 
-        gives weather update
-
         ask bot to tell u something funny
 
         ask bot to send u a meme (mostly reddit memes)
@@ -30,7 +28,7 @@ A multifunctional telegram bot that can provide the user with necessary updates 
 
         get to know which western and bollywood songs are topping the charts
         
-        get details of any movie
+        connect to other bot (https://github.com/haaris272k/ExpenseGenie)
         
  - If a user enters the wrong command then he will be notified that he entered the 'Invalid command!'
 
@@ -49,10 +47,6 @@ A multifunctional telegram bot that can provide the user with necessary updates 
     /nu - to view the trending news of the day.
     
    ![news](https://user-images.githubusercontent.com/89451392/161107770-da2a9377-3dbd-4e25-b294-8ee5f005ba00.png)
-
-    /wu - to view the live weather update.
-    
-   ![wu](https://user-images.githubusercontent.com/89451392/161107780-f414b812-ac59-4f3f-8e40-66c021965a9b.png)
 
     /fun - to get a random joke.
     
@@ -81,9 +75,3 @@ A multifunctional telegram bot that can provide the user with necessary updates 
     /topb -  to see the top 10 trending bollywood songs of the week.
     
    ![topb](https://user-images.githubusercontent.com/89451392/161107895-c89c809c-f3cc-4c28-93e4-01e659958404.png)
-   
-    /movie or /md -  to get the details of a movie.
-   
-   ![t](https://user-images.githubusercontent.com/89451392/183397729-c1d52fb0-45cb-4c5b-9053-b7bafc087273.png)
-
-
