@@ -10,8 +10,9 @@ get_trending_western_songs method is used to fetch the trending (top) western so
 get_trending_bollywood_songs method is used to fetch the trending (top) indian songs from the music website.
 
 """
-class DataScraper:
 
+
+class DataScraper:
     def __init__(self) -> None:
 
         """
@@ -22,7 +23,7 @@ class DataScraper:
 
         Returns:
             None
-        
+
         """
         pass
 
@@ -31,12 +32,12 @@ class DataScraper:
         """
         This method is used to fetch the news from the news website.
 
-        Args:   
-            self: The object of the class.  
+        Args:
+            self: The object of the class.
 
-        Returns:    
+        Returns:
             final_display: The string which contains the news.
-        
+
         """
         r = requests.get(TRENDING_NEWS_LINK)
 
@@ -58,32 +59,9 @@ class DataScraper:
 
             final_display = final_display + "🗞" + " " + j + "\n" + "\n"
 
-        return final_display
-
-    # def get_weather_update(self, WEATHER_UPDATE_LINK):
-
-        # """
-        # This method is used to fetch the weather update from the web.
-
-        # Args:   
-        #     self: The object of the class.
-
-        # Returns:
-        #     weather: The string which contains the weather update.
-        
-        # """
-        # r = requests.get(WEATHER_UPDATE_LINK, headers=HEADERS)
-
-        # soup = BeautifulSoup(r.text, "html.parser")
-
-        # temperature = soup.find(
-        #     "span", {"class": "CurrentConditions--tempValue--3a50n"}
-        # ).get_text()
-
-        # weather = "The current temperature is" + " " + temperature + "C"
-
-        # return weather
-
+        return (
+            final_display + "🔗" + " " + f"For more details, visit: {TRENDING_NEWS_LINK}"
+        )
 
     def get_trending_western_songs(self, WESTERN_SONGS_LINK):
 
@@ -95,7 +73,7 @@ class DataScraper:
 
         Returns:
             top_10_western: The string which contains the top 10 western songs.
-        
+
         """
         r = requests.get(WESTERN_SONGS_LINK, headers=HEADERS)
 
@@ -136,7 +114,7 @@ class DataScraper:
 
         Returns:
             top_10_bollywood: The string which contains the top 10 indian songs.
-        
+
         """
         r = requests.get(BOLLYWOOD_SONGS_LINK, headers=HEADERS)
 
@@ -161,6 +139,7 @@ class DataScraper:
             )
 
         return top_10_bollywood
+
 
 # creating an object of the class
 data = DataScraper()

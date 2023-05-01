@@ -4,14 +4,14 @@
 
 
 # reading credentials from creds.txt file
-with open("creds.txt", "r") as f:
+with open("your_credentials_file.txt", "r") as f:
     keys = f.read().splitlines()
 
 # credentials
-BOT_API_KEY = keys[0]
-MOVIESDB_API_KEY = keys[1]
-MONGODB_ATLAS_UNAME = keys[2]
-MONGODB_ATLAS_PW = keys[3]
+BOT_KEY = ""
+MOVIESDB_API_KEY =""
+MONGODB_ATLAS_UNAME=""
+MONGODB_ATLAS_PW =""
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"

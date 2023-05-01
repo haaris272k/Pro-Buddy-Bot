@@ -1,16 +1,15 @@
 from constants import *
 from database_handlers import *
 from data_scraper import *
-import json
-import schedule
 import time
 import telebot
 
 # creating an instance of the TeleBot class
-bot = telebot.TeleBot(BOT_API_KEY)
+bot = telebot.TeleBot("BOT_KEY")
 
 # connecting to the database from DatabaseHandler class
-dbhandler.connect_database(MONGODB_ATLAS_UNAME, MONGODB_ATLAS_PW)
+dbhandler.connect_database("MONGODB_ATLAS_UNAME", "MONGODB_ATLAS_PW")
+
 
 @bot.message_handler(commands=["start"])
 def hello(message):
@@ -42,64 +41,6 @@ def hello(message):
         + "Developed by @Haaris272k",
     )
 
-    time.sleep(3)
-    username = message.from_user.username
-    bot.send_message(
-        message.chat.id,
-        f"Hey @{username}!, Do you want to get automated news updates?. Select /yes or /no",
-    )
-
-@bot.message_handler(commands=["yes"])
-def automated_trending_news(message):
-
-    """
-    function to send automated news updates to the user
-    
-    Args:   
-        message (str): message sent by the user
-
-    Returns:
-        None
-
-    """
-    bot.send_message(
-        message.chat.id, "Ok, You will be recieving automated news updates from now on!"
-    )
-
-    """send news updates to the user (similar to  as what /nu command does)"""
-
-    def get_trending_news():
-
-        # using get_news() method from scraper class to get the news
-        news = data.get_news(TRENDING_NEWS_LINK)
-
-        # sending the news to the user
-        bot.send_message(message.chat.id, news)
-
-    # scheduling the function to run every n minutes
-    schedule.every(18000).seconds.do(get_trending_news)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
-
-@bot.message_handler(commands=["no"])
-def no(message):
-
-    """
-    function to send a message to the user if he/she doesn't want automated news updates
-
-    Args:
-        message (str): message sent by the user
-
-    Returns:
-        None
-    
-    """
-    # sending a message to the user
-    bot.send_message(
-        message.chat.id,
-        "Okay, No problem. You can use /nu command manually to get news updates whenever you want.",
-    )
 
 @bot.message_handler(commands=["list"])
 def list(message):
@@ -112,7 +53,7 @@ def list(message):
 
     Returns:
         None
-    
+
     """
     # list of all the available commands
     comms = (
@@ -146,11 +87,12 @@ def list(message):
         + "/topb -  top 10 trending bollywood songs of the week."
         + "\n"
         + "\n"
-        + "/movie or /md - to get the details of any movie."
+        + "/eg - connect to the ExpenseGenie bot."
     )
 
     # sending the list of commands to the telegram user
     bot.send_message(message.chat.id, comms)
+
 
 @bot.message_handler(commands=["hello", "hi", "hey"])
 def hello(message):
@@ -163,12 +105,13 @@ def hello(message):
 
     Returns:
         None
-    
+
     """
     # greeting the user
     username = str(message.chat.first_name)
     greet = random.choice(interactive_greet_response)
     bot.send_message(message.chat.id, f"Hey {username}, {greet}")
+
 
 @bot.message_handler(commands=["nu"])
 def trending_news(message):
@@ -192,6 +135,7 @@ def trending_news(message):
     time.sleep(0.5)
     bot.send_message(message.chat.id, trending_news)
 
+
 @bot.message_handler(commands=["fun"])
 def joke(message):
 
@@ -203,7 +147,7 @@ def joke(message):
 
     Returns:
         None
-    
+
     """
     # sending interactive response to the telegram user
     bot.send_message(
@@ -223,6 +167,7 @@ def joke(message):
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
+
 @bot.message_handler(commands=["meme"])
 def meme(message):
 
@@ -234,11 +179,12 @@ def meme(message):
 
     Returns:
         None
-    
+
     """
     tagtype = "meme"
     result = dbhandler.lookup(tagtype)
     bot.send_photo(message.chat.id, result)
+
 
 @bot.message_handler(commands=["lit"])
 def poem(message):
@@ -251,11 +197,12 @@ def poem(message):
 
     Returns:
         None
-    
+
     """
     tagtype = "poem"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
+
 
 @bot.message_handler(commands=["quote"])
 def quote(message):
@@ -268,11 +215,12 @@ def quote(message):
 
     Returns:
         None
-    
+
     """
     tagtype = "quote"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
+
 
 @bot.message_handler(commands=["fact"])
 def fact(message):
@@ -285,92 +233,12 @@ def fact(message):
 
     Returns:
         None
-    
+
     """
     tagtype = "fact"
     result = dbhandler.lookup(tagtype)
     bot.send_message(message.chat.id, result)
 
-@bot.message_handler(commands=["Md", "md", "movie", "Movie"])
-def ask_movie_name(message):
-
-    """
-    function to ask the user for the movie name
-
-    Args:
-        message (str): message sent by the user
-
-    Returns:
-        None
-
-    """
-    # asking the user to enter the movie name
-    display_message = "What movie do you want to know about?"
-    bot.reply_to(message, display_message)
-    bot.register_next_step_handler(message, get_movie_name)
-
-def get_movie_name(message):
-
-    """
-    function to get the movie name from the user
-
-    Args:
-        message (str): message sent by the user
-
-    Returns:
-        None
-    
-    """
-    # getting the movie name from the user
-    movie_title = message.text
-
-    try:
-        # fetching the movie details from the API
-        link = (
-            f"https://www.omdbhandlerapi.com/?t={movie_title}&apikey={MOVIESDB_API_KEY}"
-        )
-        r = requests.get(link, headers=HEADERS)
-
-        # parsing the data and converting it (from json data format) to a dictionary
-        movie_data = json.loads(r.text)
-
-        # accessing the required data
-        movie_genre = movie_data["Genre"]
-        movie_title = movie_data["Title"]
-        movie_year = movie_data["Year"]
-        movie_rating = movie_data["imdbhandlerRating"]
-        movie_runtime = movie_data["Runtime"]
-        movie_director = movie_data["Director"]
-        movie_actors = movie_data["Actors"]
-        movie_plot = movie_data["Plot"]
-        movie_awards = movie_data["Awards"]
-
-        # storing the movie details
-        final_data = (
-            f"Title: {movie_title} \n"
-            f" \n"
-            f"Genre: {movie_genre} \n"
-            f" \n"
-            f"Year: {movie_year} \n"
-            f" \n"
-            f"Rating: {movie_rating} \n"
-            f" \n"
-            f"Runtime: {movie_runtime} \n"
-            f" \n"
-            f"Director: {movie_director} \n"
-            f" \n"
-            f"Actors: {movie_actors} \n"
-            f" \n"
-            f"Plot: {movie_plot} \n"
-            f" \n"
-            f"Awards: {movie_awards} \n"
-        )
-
-        # sending the relevant data to the telegram user
-        bot.send_message(message.chat.id, final_data)
-
-    except:
-        bot.send_message(message.chat.id, "Invalid movie name! ")
 
 @bot.message_handler(commands=["topw"])
 def top_western_songs(message):
@@ -383,7 +251,7 @@ def top_western_songs(message):
 
     Returns:
         None
-    
+
     """
     # using get_trending_western_songs() method from Data_Scraper class to get the top 10 trending western songs
     top_10_western = data.get_trending_western_songs(WESTERN_SONGS_LINK)
@@ -392,6 +260,7 @@ def top_western_songs(message):
     bot.send_message(message.chat.id, "Here's the 10 western songs topping the chart 🎶")
     time.sleep(0.5)
     bot.send_message(message.chat.id, top_10_western)
+
 
 @bot.message_handler(commands=["topb"])
 def top_bollywood_songs(message):
@@ -417,6 +286,34 @@ def top_bollywood_songs(message):
     time.sleep(2)
     bot.send_message(message.chat.id, top_10_bollywood)
 
+
+@bot.message_handler(commands=["eg", "expensegenie", "EG"])
+def expense_genie(message):
+    """
+    function to connect to the ExpenseGenie bot
+
+    Args:
+        message (str): message sent by the user
+
+    Returns:
+        None
+    """
+    # creating an inline keyboard to connect to ExpenseGenie bot
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    url_button = telebot.types.InlineKeyboardButton(
+        text="Connect to ExpenseGenie", url="https://t.me/BudgetWizardBot"
+    )
+    keyboard.add(url_button)
+
+    # sending the interactive message to the telegram user
+    bot.send_message(
+        message.chat.id,
+        "ExpenseGenie is a telegram bot that helps you to manage your expenses. \n\n"
+        "Click the button below to connect to the ExpenseGenie bot:",
+        reply_markup=keyboard,
+    )
+
+
 @bot.message_handler(func=lambda m: True)
 def invalid_input(message):
 
@@ -428,11 +325,26 @@ def invalid_input(message):
 
     Returns:
         None
-    
+
     """
     # sending 'invalid input!' message to the user along with the gif
     bot.send_animation(
         message.chat.id, INVALID_INPUT_GIF, caption="Unrecognizable command!"
     )
 
-bot.infinity_polling()
+
+def main():
+
+    """
+    main function to run the bot
+
+    Returns:
+        None
+
+    """
+    # running the bot
+    bot.polling()
+
+
+if __name__ == "__main__":
+    main()
